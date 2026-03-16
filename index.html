@@ -3,426 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>לא מוותרים על החלום - חדר בריחה</title>
+    <title>חדר בריחה - לא מוותרים על החלום</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
-
-        body {
-            font-family: 'Rubik', sans-serif;
-            background-color: #e0f2fe;
-            color: #333;
+        body, html {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .screen.active {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
 
-        .container {
-            background: #ffffff;
-            max-width: 700px;
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            padding: 30px;
-            box-sizing: border-box;
-            border-top: 8px solid #00509e; /* צבעי הפועל פ"ת */
-        }
+        #screen0 { background-color: #1a1a1a; }
 
-        h1, h2 {
-            color: #00509e;
-            text-align: center;
-        }
-
-        p {
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-
-        .story-text {
-            background: #f8fafc;
-            padding: 15px;
-            border-right: 4px solid #0284c7;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-
-        .section {
-            display: none;
-            animation: fadeIn 0.6s ease-in-out;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .question {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .question label {
-            display: block;
-            padding: 10px 15px;
-            background: #f1f5f9;
-            margin: 8px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 500;
-        }
-
-        .question label:hover {
-            background: #e2e8f0;
-        }
-
-        button {
-            background-color: #00509e;
+        /* כפתורים */
+        .btn {
+            padding: 15px 30px;
+            font-size: 22px;
+            font-weight: bold;
+            background-color: #ff9800;
             color: white;
             border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            transition: transform 0.2s, background-color 0.2s;
+            z-index: 10;
+        }
+        .btn:hover {
+            background-color: #e68a00;
+            transform: scale(1.05);
+        }
+
+        .btn-small {
+            position: absolute;
+            bottom: 40px;
             padding: 12px 25px;
-            font-size: 1.1em;
+            font-size: 18px;
+        }
+
+        /* תיבות סיפור (Story Boxes) */
+        .story-box {
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            text-align: center;
+            font-size: 20px;
+            line-height: 1.6;
+            border: 2px solid #ff9800;
+            box-shadow: 0 0 20px rgba(0,0,0,0.7);
+            margin-bottom: 80px;
+        }
+        .story-box h2 {
+            color: #ff9800;
+            margin-top: 0;
+        }
+
+        /* טקסטים עליונים */
+        .top-text {
+            position: absolute;
+            top: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 22px;
+            text-align: center;
+            border: 1px solid #ff9800;
+        }
+
+        /* נקודות זוהרות */
+        .glowing-dot {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background-color: #00ffcc;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc;
+            cursor: pointer;
+            animation: pulse 1.5s infinite alternate;
+            display: none;
+            z-index: 5;
+            border: 2px solid white;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 25px #00ffcc, 0 0 50px #00ffcc; }
+        }
+
+        /* מודאל לשאלות */
+        .modal-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 20;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .modal-content h3 { margin-top: 0; color: #333; font-size: 22px;}
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .option-btn {
+            padding: 12px;
+            background: #f8f9fa;
+            border: 2px solid #ddd;
             border-radius: 8px;
             cursor: pointer;
-            display: block;
-            margin: 20px auto 0;
-            font-family: 'Rubik', sans-serif;
-            font-weight: bold;
-            transition: background 0.3s, transform 0.1s;
+            font-size: 18px;
+            transition: all 0.2s;
         }
-
-        button:hover {
-            background-color: #003f7a;
-            transform: scale(1.02);
-        }
-
-        select, input[type="text"] {
-            padding: 8px;
-            font-size: 1em;
-            border-radius: 5px;
-            border: 1px solid #cbd5e1;
-            font-family: 'Rubik', sans-serif;
-            margin: 5px 0;
-            width: 100%;
-            max-width: 250px;
-        }
-
-        .cabinet-icon {
-            font-size: 5rem;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .error-msg {
-            color: #dc2626;
-            text-align: center;
-            font-weight: bold;
-            margin-top: 15px;
-            min-height: 24px;
-        }
-
-        .success-img {
-            text-align: center;
-            font-size: 6rem;
-            margin: 10px 0;
-        }
-
-        .checkbox-group label {
-            display: inline-block;
-            background: #f1f5f9;
-            padding: 10px 15px;
-            margin: 5px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .task-row {
-            margin-bottom: 15px;
-        }
+        .option-btn:hover { background: #e9ecef; border-color: #ff9800; }
     </style>
 </head>
 <body>
 
-<div class="container">
+    <div id="questionModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="questionText">שאלה תופיע כאן</h3>
+            <div id="optionsContainer" class="options"></div>
+        </div>
+    </div>
 
-    <div id="intro" class="section active">
-        <h1>לא מוותרים על החלום 🏓</h1>
-        <div class="story-text">
+    <div id="screen0" class="screen active">
+        <div class="story-box">
+            <h2>לא מוותרים על החלום</h2>
             <p>קבוצת ילדים עם מוגבלויות מגיעה לביקור במועדון טניס השולחן של הפועל פתח־תקווה.<br>
             כאשר הם נכנסים לאולם, הם פוגשים אדם שמחזיק מחבט ומקבל אותם בחיוך.</p>
-            <p>האדם הזה הוא דני בוברוב, המאמן של מועדון טניס השולחן של הפועל פתח־תקווה ואחד הספורטאים הפראלימפיים הבולטים בישראל.</p>
-            <p>דני פונה אליהם ואומר:<br>
-            <strong>"שלום לכולם! לפני שנתחיל, אני רוצה לשאול אתכם משהו… אתם יודעים מי אני?"</strong></p>
+            <p>זהו דני בוברוב, המאמן של המועדון ואחד הספורטאים הפראלימפיים הבולטים בישראל.</p>
+            <p>דני פונה אליהם ואומר:<br><strong>"שלום לכולם! לפני שנתחיל, אני רוצה לשאול אתכם משהו… אתם יודעים מי אני?"</strong></p>
         </div>
-        <button onclick="showSection('stage-1')">התחילו את הביקור</button>
+        <button class="btn" onclick="nextScreen('screen1'); initScreen1();">ללכת לחדר הבריחה</button>
     </div>
 
-    <div id="stage-1" class="section">
-        <h2>חלק 1: השאלות של דני</h2>
-        <p>כדי להמשיך את הביקור, ענו נכון על 5 השאלות של דני:</p>
-        
-        <div class="question">
-            <p>1️⃣ באיזה ענף ספורט דני בוברוב מתחרה?</p>
-            <label><input type="radio" name="q1" value="0"> כדורסל כיסאות גלגלים</label>
-            <label><input type="radio" name="q1" value="1"> טניס שולחן</label>
-            <label><input type="radio" name="q1" value="0"> שחייה</label>
-        </div>
-
-        <div class="question">
-            <p>2️⃣ באיזה מועדון דני בוברוב מאמן כיום?</p>
-            <label><input type="radio" name="q2" value="1"> הפועל פתח־תקווה</label>
-            <label><input type="radio" name="q2" value="0"> מכבי תל אביב</label>
-            <label><input type="radio" name="q2" value="0"> הפועל ירושלים</label>
-        </div>
-
-        <div class="question">
-            <p>3️⃣ איזה אגודה וקבוצת טניס שולחן דני בוברוב מנהל?</p>
-            <label><input type="radio" name="q3" value="0"> מכבי חיפה</label>
-            <label><input type="radio" name="q3" value="0"> עירוני פתח תקווה</label>
-            <label><input type="radio" name="q3" value="1"> אגודת הפועל פתח־תקווה</label>
-        </div>
-
-        <div class="question">
-            <p>4️⃣ מה היה דירוג השיא של דני בוברוב בעולם בטניס שולחן?</p>
-            <label><input type="radio" name="q4" value="0"> מקום 100 בעולם</label>
-            <label><input type="radio" name="q4" value="1"> מקום 11 בעולם</label>
-            <label><input type="radio" name="q4" value="0"> מקום 50 בעולם</label>
-        </div>
-
-        <div class="question">
-            <p>5️⃣ למה בחרו בדני בוברוב להיות דמות מעוררת השראה במועדון?</p>
-            <label><input type="radio" name="q5" value="0"> כי הוא מאמן רק שחקנים ללא מוגבלויות</label>
-            <label><input type="radio" name="q5" value="1"> כי למרות המגבלה הוא ספורטאי פראלימפי שלא ויתר והגיע להישגים</label>
-            <label><input type="radio" name="q5" value="0"> כי הוא השחקן הכי גבוה בקבוצה</label>
-        </div>
-
-        <div id="error-1" class="error-msg"></div>
-        <button onclick="checkStage1()">בדוק תשובות</button>
+    <div id="screen1" class="screen" style="background-image: url('https://i.ibb.co/Ldh69tHx/Screen-Shot-3-16-2026-7-12-17-PM.png');">
+        <div class="top-text">חלק 1 – השאלות של דני</div>
+        <div id="dot1_1" class="glowing-dot" style="top: 30%; left: 20%;" onclick="openQuestion(1, 1)"></div>
+        <div id="dot1_2" class="glowing-dot" style="top: 50%; left: 40%;" onclick="openQuestion(1, 2)"></div>
+        <div id="dot1_3" class="glowing-dot" style="top: 70%; left: 60%;" onclick="openQuestion(1, 3)"></div>
+        <div id="dot1_4" class="glowing-dot" style="top: 40%; left: 80%;" onclick="openQuestion(1, 4)"></div>
+        <div id="dot1_5" class="glowing-dot" style="top: 20%; left: 60%;" onclick="openQuestion(1, 5)"></div>
     </div>
 
-    <div id="story-2" class="section">
-        <h2>הילדים לא מאמינים...</h2>
-        <div class="story-text">
-            <p>כל הכבוד! עניתם נכון.</p>
-            <p>דני מספר לילדים שהוא רוצה להקים קבוצת טניס שולחן לילדים עם מוגבלויות בפתח תקווה.</p>
-            <p>אבל הילדים אומרים:<br>
-            <strong>"עזוב… אנחנו לא יכולים. אנחנו בקושי מצליחים לזוז. אתה לא רואה שאנחנו בכיסאות גלגלים?"</strong></p>
-            <p>דני מנסה לשכנע אותם ומספר על הדרך שעבר ועל ההישגים שלו, אבל הם עדיין לא משתכנעים. לכן הוא אומר:</p>
-            <p><strong>"בואו איתי למקום אחד…"</strong></p>
+    <div id="screen2" class="screen" style="background-image: url('https://i.ibb.co/CSnL1v0/Screen-Shot-3-16-2026-7-11-57-PM.png');">
+        <div class="story-box">
+            <h2>חלק 2 – הילדים לא מאמינים</h2>
+            <p>דני מספר להם שהוא רוצה להקים קבוצת טניס שולחן לילדים עם מוגבלויות בפתח תקווה.</p>
+            <p>אבל הילדים אומרים:<br><strong>"עזוב… אנחנו לא יכולים. אנחנו בקושי מצליחים לזוז. אתה לא רואה שאנחנו בכיסאות גלגלים?"</strong></p>
+            <p>דני מנסה לשכנע אותם ומספר על הדרך שעבר ועל ההישגים שלו. הם עדיין לא משתכנעים. לכן הוא אומר:<br>
+            <strong>"בואו איתי למקום אחד…"</strong></p>
         </div>
-        <button onclick="showSection('stage-2')">המשך למשרד</button>
+        <button class="btn btn-small" onclick="nextScreen('screen3'); initScreen3();">לעבור לדף הבא</button>
     </div>
 
-    <div id="stage-2" class="section">
-        <h2>משרד ראש אגף הפועל פתח־תקווה</h2>
-        <div class="story-text">
-            <p>דני לוקח אתכם למשרד. במשרד יש ארון גדול עם גביעים ומדליות של המועדון... אבל הארון נעול!</p>
-            <p>ראש האגף אומר: <strong>"אם אתם רוצים לראות את ההישגים של המועדון — תצטרכו לענות על כמה שאלות."</strong></p>
-        </div>
-        
-        <div class="cabinet-icon" id="cabinet-icon">🔒</div>
-
-        <div class="question">
-            <p>6️⃣ מהו הדירוג הקבוע של קבוצת טניס השולחן של הפועל פתח־תקווה בליגת העל?</p>
-            <select id="q6">
-                <option value="">בחרו תשובה...</option>
-                <option value="0">תחתית הליגה</option>
-                <option value="1">צמרת הליגה והמקומות הראשונים</option>
-                <option value="0">אמצע טבלה</option>
-            </select>
-        </div>
-
-        <div class="question">
-            <p>7️⃣ היכן בעיר פתח־תקווה מתקיימים אימוני טניס שולחן של המועדון?</p>
-            <select id="q7">
-                <option value="">בחרו תשובה...</option>
-                <option value="1">באולמות ספורט ובתי ספר ברחבי העיר</option>
-                <option value="0">רק באצטדיון הכדורגל</option>
-                <option value="0">מחוץ לעיר בלבד</option>
-            </select>
-        </div>
-
-        <div class="question">
-            <p>8️⃣ מה המועדון מעניק לילדים ולנוער חוץ מאימונים בספורט?</p>
-            <select id="q8">
-                <option value="">בחרו תשובה...</option>
-                <option value="0">רק ציוד ספורט</option>
-                <option value="0">שיעורי נהיגה</option>
-                <option value="1">ערכים, חינוך למצוינות ומסגרת חברתית</option>
-            </select>
-        </div>
-
-        <div id="error-2" class="error-msg"></div>
-        <button onclick="checkStage2()" id="btn-unlock">פתח את הארון</button>
+    <div id="screen3" class="screen" style="background-image: url('https://i.ibb.co/QvkhHCqT/Screen-Shot-3-16-2026-7-11-44-PM.png');">
+        <div class="top-text">כדי לפתוח את ארון הגביעים במשרד ראש אגף הפועל פתח־תקווה צריך לענות על השאלות:</div>
+        <div id="dot3_1" class="glowing-dot" style="top: 45%; left: 50%;" onclick="openQuestion(3, 1)"></div>
+        <div id="dot3_2" class="glowing-dot" style="top: 55%; left: 30%;" onclick="openQuestion(3, 2)"></div>
+        <div id="dot3_3" class="glowing-dot" style="top: 65%; left: 70%;" onclick="openQuestion(3, 3)"></div>
+        <button id="btnNextScreen3" class="btn btn-small" style="display:none;" onclick="nextScreen('screen4')">לעבור לדף הבא</button>
     </div>
 
-    <div id="story-3" class="section">
-        <h2>הארון נפתח! 🏆</h2>
-        <div class="story-text">
-            <p>הארון נפתח! בפנים אתם רואים עשרות גביעים נוצצים, מדליות זהב ותמונות מאליפויות של הפועל פתח־תקווה.</p>
-            <p>ואז אחד הילדים מסתכל ואומר:<br>
-            <strong>"אם המועדון הגיע לכל ההישגים האלה… אולי גם אנחנו יכולים להצליח."</strong></p>
-            <p>הילדים מחליטים לנסות ולהתאמן עם דני, אבל בהתחלה הם מתקשים מאוד.</p>
-            <p>דני מחייך ואומר: <strong>"כדי להשתפר צריך להתאמן."</strong></p>
+    <div id="screen4" class="screen" style="background-image: url('https://i.ibb.co/RkgthQjP/Screen-Shot-3-16-2026-7-11-24-PM.png');">
+        <div class="story-box">
+            <p>כאשר הם עונים נכון — הארון נפתח.<br>הם רואים גביעים, מדליות ותמונות מאליפויות.</p>
+            <p>ואז אחד הילדים אומר:<br><strong>"אם המועדון הגיע לכל ההישגים האלה… אולי גם אנחנו יכולים להצליח."</strong></p>
         </div>
-        <button onclick="showSection('stage-3')">קדימה לאימון!</button>
+        <button class="btn btn-small" onclick="nextScreen('screen5')">לעבור לדף הבא</button>
     </div>
 
-    <div id="stage-3" class="section">
-        <h2>חלק 4: משימות האימון</h2>
-        <p>בצעו את 3 משימות האימון כדי להתכונן לטורניר:</p>
-
-        <div class="question">
-            <p>9️⃣ התאימו בין הציוד לבין השימוש שלו:</p>
-            <div class="task-row">
-                <strong>מחבט:</strong> 
-                <select id="t1-racket">
-                    <option value="">בחרו...</option>
-                    <option value="1">חובטים בעזרתו בכדור</option>
-                    <option value="2">קופץ מצד לצד</option>
-                    <option value="3">משטח המשחק שלנו</option>
-                </select>
-            </div>
-            <div class="task-row">
-                <strong>כדור:</strong> 
-                <select id="t1-ball">
-                    <option value="">בחרו...</option>
-                    <option value="1">חובטים בעזרתו בכדור</option>
-                    <option value="2">קופץ מצד לצד</option>
-                    <option value="3">משטח המשחק שלנו</option>
-                </select>
-            </div>
-            <div class="task-row">
-                <strong>שולחן:</strong> 
-                <select id="t1-table">
-                    <option value="">בחרו...</option>
-                    <option value="1">חובטים בעזרתו בכדור</option>
-                    <option value="2">קופץ מצד לצד</option>
-                    <option value="3">משטח המשחק שלנו</option>
-                </select>
-            </div>
+    <div id="screen5" class="screen" style="background-image: url('https://i.ibb.co/F4T5ryzr/Screen-Shot-3-16-2026-7-11-12-PM.png');">
+        <div class="story-box">
+            <h2>חלק 4 – האימונים</h2>
+            <p>הילדים מחליטים לנסות ולהתאמן עם דני. אבל בהתחלה הם מתקשים מאוד.</p>
+            <p>דני אומר:<br><strong>"כדי להשתפר צריך להתאמן."</strong></p>
+            <p>כעת עליהם לבצע 3 משימות אימון.</p>
         </div>
-
-        <div class="question">
-            <p>🔟 סדרו את שלבי האימון לפי הסדר הנכון:</p>
-            <div class="task-row">
-                שלב 1: <select id="t2-1"><option value="">בחרו...</option><option value="1">חימום</option><option value="2">אימון</option><option value="3">משחק</option></select>
-            </div>
-            <div class="task-row">
-                שלב 2: <select id="t2-2"><option value="">בחרו...</option><option value="1">חימום</option><option value="2">אימון</option><option value="3">משחק</option></select>
-            </div>
-            <div class="task-row">
-                שלב 3: <select id="t2-3"><option value="">בחרו...</option><option value="1">חימום</option><option value="2">אימון</option><option value="3">משחק</option></select>
-            </div>
-        </div>
-
-        <div class="question">
-            <p>1️⃣1️⃣ סמנו את הערכים שנלמדים דרך הספורט:</p>
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="values" value="1"> התמדה</label>
-                <label><input type="checkbox" name="values" value="0"> ויתור מראש</label>
-                <label><input type="checkbox" name="values" value="1"> נחישות</label>
-                <label><input type="checkbox" name="values" value="0"> זלזול</label>
-                <label><input type="checkbox" name="values" value="1"> כבוד</label>
-            </div>
-        </div>
-
-        <div id="error-3" class="error-msg"></div>
-        <button onclick="checkStage3()">סיימנו את האימון</button>
+        <button class="btn btn-small" onclick="nextScreen('screen6'); initScreen6();">לעבור לדף הבא</button>
     </div>
 
-    <div id="story-4" class="section">
-        <div class="success-img">🥇</div>
-        <h2>הצלחתם!</h2>
-        <div class="story-text">
-            <p>עובר זמן...</p>
-            <p>שנה לאחר מכן, הילדים פותחים עיתון ורואים כתבה עם תמונה שלהם. בתמונה הם עומדים עם מדליות וגביעים לאחר ניצחון מדהים בטורניר.</p>
-            <p>הם הצליחו.</p>
-            <p>דני מסתכל עליהם בגאווה ואומר את המשפט שילווה אותם תמיד:</p>
-            <h3 style="text-align: center; color: #0284c7; font-size: 1.5em;">"מי שלא מוותר — מצליח."</h3>
-        </div>
-        <button onclick="location.reload()">שחקו שוב</button>
+    <div id="screen6" class="screen" style="background-image: url('https://i.ibb.co/fGkHzKZv/Screen-Shot-3-16-2026-7-10-53-PM.png');">
+        <div class="top-text">שלב 3 – משימות האימון (3 משימות)</div>
+        <div id="dot6_1" class="glowing-dot" style="top: 40%; left: 30%;" onclick="openQuestion(6, 1)"></div>
+        <div id="dot6_2" class="glowing-dot" style="top: 50%; left: 50%;" onclick="openQuestion(6, 2)"></div>
+        <div id="dot6_3" class="glowing-dot" style="top: 60%; left: 70%;" onclick="openQuestion(6, 3)"></div>
+        <button id="btnNextScreen6" class="btn btn-small" style="display:none;" onclick="nextScreen('screen7')">לעבור לדף הבא</button>
     </div>
 
-</div>
+    <div id="screen7" class="screen" style="background-image: url('https://i.ibb.co/6JrH6XvL/Screen-Shot-3-16-2026-7-10-41-PM.png');">
+        <div class="story-box">
+            <h2>הסיום</h2>
+            <p>עובר זמן. שנה לאחר מכן הילדים פותחים עיתון ורואים כתבה עם תמונה שלהם.</p>
+            <p>בתמונה הם עומדים עם מדליות וגביעים לאחר ניצחון בטורניר. הם הצליחו!</p>
+            <p>דני אומר להם:<br><strong>"מי שלא מוותר — מצליח."</strong></p>
+            <h1 style="color: #00ffcc;">מזל טוב! סיימתם את חדר הבריחה</h1>
+        </div>
+        <button class="btn" onclick="location.reload();">התחל מחדש</button>
+    </div>
 
-<script>
-    function showSection(id) {
-        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    <script>
+        // מאגר השאלות המעודכן
+        const questions = {
+            screen1: {
+                1: { q: "באיזה ענף ספורט דני בוברוב מתחרה?", options: ["כדורסל כיסאות גלגלים", "טניס שולחן", "שחייה פראלימפית", "אתלטיקה קלה"], correct: 1 },
+                2: { q: "באיזה מועדון דני בוברוב מאמן כיום?", options: ["הפועל פתח-תקווה", "מכבי תל אביב", "הפועל ירושלים", "מכבי חיפה"], correct: 0 },
+                3: { q: "איזה אגודה וקבוצת טניס שולחן דני בוברוב מנהל?", options: ["הפועל פתח-תקווה", "עירוני קרית אונו", "מכבי רמת גן", "אליצור נתניה"], correct: 0 },
+                4: { q: "מה היה דירוג השיא של דני בוברוב בעולם בטניס שולחן?", options: ["מקום 100", "מקום 50", "עשירייה ראשונה בעולם", "מקום 1"], correct: 2 }, // אנא עדכן את התשובה המדויקת אם צריך
+                5: { q: "למה בחרו בדני בוברוב להיות דמות מעוררת השראה במועדון?", options: ["בגלל גובהו", "בגלל שהוא גר קרוב", "בגלל הישגיו המרשימים והדרך שעבר", "כי הוא מפורסם בטלוויזיה"], correct: 2 }
+            },
+            screen3: {
+                1: { q: "מהו הדירוג הקבוע של קבוצת טניס השולחן של הפועל פתח־תקווה בליגת העל?", options: ["צמרת ליגת העל", "תחתית הטבלה", "ליגה לאומית", "ליגה א'"], correct: 0 },
+                2: { q: "ציינו שני מקומות בעיר פתח־תקווה שבהם מתקיימים אימוני טניס שולחן של המועדון.", options: ["בקניון ובפארק", "בים ובבריכה", "אולמות ספורט ומתנ״סים", "במסעדות בעיר"], correct: 2 },
+                3: { q: "מה המועדון מעניק לילדים ולנוער חוץ מאימונים בספורט?", options: ["ארוחות חינם", "ערכים, מסגרת חינוכית ומשמעת", "רישיון נהיגה", "מנוי למשחקי כדורגל"], correct: 1 }
+            },
+            screen6: {
+                1: { q: "התאימו בין הציוד לבין השימוש שלו בטניס שולחן (מחבט / כדור / שולחן).", options: ["מחבט - לחבוט, כדור - למשחק, שולחן - משטח", "מחבט - לשבת, כדור - לאכול, שולחן - לשבור", "הכל אותו דבר, אין הבדל"], correct: 0 },
+                2: { q: "סדרו את שלבי האימון לפי הסדר הנכון:", options: ["משחק -> אימון -> חימום", "חימום -> אימון -> משחק", "אימון -> חימום -> משחק"], correct: 1 },
+                3: { q: "מצאו את הערכים שנלמדים דרך הספורט:", options: ["עצלנות, ויתור, כעס", "שינה, אכילה, מנוחה", "התמדה, נחישות, כבוד"], correct: 2 }
+            }
+        };
 
-    function checkStage1() {
-        const q1 = document.querySelector('input[name="q1"]:checked');
-        const q2 = document.querySelector('input[name="q2"]:checked');
-        const q3 = document.querySelector('input[name="q3"]:checked');
-        const q4 = document.querySelector('input[name="q4"]:checked');
-        const q5 = document.querySelector('input[name="q5"]:checked');
-
-        if (q1?.value === '1' && q2?.value === '1' && q3?.value === '1' && q4?.value === '1' && q5?.value === '1') {
-            document.getElementById('error-1').innerText = "";
-            showSection('story-2');
-        } else {
-            document.getElementById('error-1').innerText = "אופס! נראה שחלק מהתשובות שגויות, נסו שוב.";
+        function nextScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
         }
-    }
 
-    function checkStage2() {
-        const q6 = document.getElementById('q6').value;
-        const q7 = document.getElementById('q7').value;
-        const q8 = document.getElementById('q8').value;
+        let currentDotScreen1 = 1;
+        function initScreen1() {
+            document.getElementById('dot1_1').style.display = 'block';
+        }
 
-        if (q6 === '1' && q7 === '1' && q8 === '1') {
-            document.getElementById('error-2').innerText = "";
-            document.getElementById('cabinet-icon').innerHTML = '🏆🥇🏆';
-            document.getElementById('btn-unlock').style.display = 'none';
+        let currentDotScreen3 = 1;
+        function initScreen3() {
+            document.getElementById('dot3_1').style.display = 'block';
+        }
+
+        let currentDotScreen6 = 1;
+        function initScreen6() {
+            document.getElementById('dot6_1').style.display = 'block';
+        }
+
+        let activeScreenNum, activeQuestionNum;
+
+        function openQuestion(screenNum, questionNum) {
+            activeScreenNum = screenNum;
+            activeQuestionNum = questionNum;
             
-            // השהייה קטנה כדי שיראו שהארון נפתח לפני שמעבירים מסך
-            setTimeout(() => {
-                showSection('story-3');
-            }, 1200);
-        } else {
-            document.getElementById('error-2').innerText = "הארון עדיין נעול. בדקו שוב את התשובות שלכם.";
+            const qData = questions[`screen${screenNum}`][questionNum];
+            document.getElementById('questionText').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = ''; 
+            
+            qData.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, qData.correct);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('questionModal').style.display = 'flex';
         }
-    }
 
-    function checkStage3() {
-        // ציוד
-        const r = document.getElementById('t1-racket').value;
-        const b = document.getElementById('t1-ball').value;
-        const t = document.getElementById('t1-table').value;
-        
-        // שלבי אימון
-        const s1 = document.getElementById('t2-1').value;
-        const s2 = document.getElementById('t2-2').value;
-        const s3 = document.getElementById('t2-3').value;
+        function checkAnswer(selectedIndex, correctIndex) {
+            if(selectedIndex === correctIndex) {
+                alert("תשובה נכונה! כל הכבוד.");
+                document.getElementById('questionModal').style.display = 'none';
+                
+                document.getElementById(`dot${activeScreenNum}_${activeQuestionNum}`).style.display = 'none';
+                
+                if (activeScreenNum === 1) {
+                    currentDotScreen1++;
+                    if (currentDotScreen1 <= 5) {
+                        document.getElementById(`dot1_${currentDotScreen1}`).style.display = 'block';
+                    } else {
+                        nextScreen('screen2'); 
+                    }
+                } 
+                else if (activeScreenNum === 3) {
+                    currentDotScreen3++;
+                    if (currentDotScreen3 <= 3) {
+                        document.getElementById(`dot3_${currentDotScreen3}`).style.display = 'block';
+                    } else {
+                        document.getElementById('btnNextScreen3').style.display = 'block'; 
+                    }
+                }
+                else if (activeScreenNum === 6) {
+                    currentDotScreen6++;
+                    if (currentDotScreen6 <= 3) {
+                        document.getElementById(`dot6_${currentDotScreen6}`).style.display = 'block';
+                    } else {
+                        document.getElementById('btnNextScreen6').style.display = 'block';
+                    }
+                }
 
-        // ערכים
-        const checkedValues = Array.from(document.querySelectorAll('input[name="values"]:checked'));
-        const correctValsCount = checkedValues.filter(cb => cb.value === '1').length;
-        const wrongValsCount = checkedValues.filter(cb => cb.value === '0').length;
-
-        const isEquipmentCorrect = (r === '1' && b === '2' && t === '3');
-        const isStepsCorrect = (s1 === '1' && s2 === '2' && s3 === '3');
-        const isValuesCorrect = (correctValsCount === 3 && wrongValsCount === 0);
-
-        if (isEquipmentCorrect && isStepsCorrect && isValuesCorrect) {
-            document.getElementById('error-3').innerText = "";
-            showSection('story-4');
-        } else {
-            document.getElementById('error-3').innerText = "חלק מהמשימות לא בוצעו כראוי. זכרו: כדי להשתפר צריך להתאמן נכון!";
+            } else {
+                alert("טעות! נסה שוב.");
+            }
         }
-    }
-</script>
-
+    </script>
 </body>
 </html>
