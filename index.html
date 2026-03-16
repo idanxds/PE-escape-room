@@ -19,9 +19,12 @@
             display: none;
             width: 100%;
             height: 100%;
-            background-size: cover;
+            /* השינוי כאן: contain יבטיח שהתמונה כולה תיראה ללא חיתוך */
+            background-size: contain; 
+            background-repeat: no-repeat;
             background-position: center;
             position: relative;
+            background-color: #000;
         }
 
         .screen.active {
@@ -184,7 +187,7 @@
         <button class="btn btn-small" onclick="nextScreen('screen3'); initScreen3();">לעבור לדף הבא</button>
     </div>
 
-    <div id="screen3" class="screen" style="background-image: url('https://i.ibb.co/QvkhHCqT/Screen-Shot-3-16-2026-7-11-44-PM.png');">
+    <div id="screen3" class="screen" style="background-image: url('https://i.ibb.co/DDJnpZv8/Screen-Shot-3-16-2026-7-11-44-PM-Nero-AI-Image-Upscaler-Photo-Face.png');">
         <div class="top-text">כדי לפתוח את ארון הגביעים במשרד ראש אגף הפועל פתח־תקווה צריך לענות על השאלות:</div>
         <div id="dot3_1" class="glowing-dot" style="top: 45%; left: 50%;" onclick="openQuestion(3, 1)"></div>
         <div id="dot3_2" class="glowing-dot" style="top: 55%; left: 30%;" onclick="openQuestion(3, 2)"></div>
@@ -192,7 +195,7 @@
         <button id="btnNextScreen3" class="btn btn-small" style="display:none;" onclick="nextScreen('screen4')">לעבור לדף הבא</button>
     </div>
 
-    <div id="screen4" class="screen" style="background-image: url('https://i.ibb.co/RkgthQjP/Screen-Shot-3-16-2026-7-11-24-PM.png');">
+    <div id="screen4" class="screen" style="background-image: url('https://i.ibb.co/YFdppCX8/Screen-Shot-3-16-2026-7-11-24-PM-Nero-AI-Image-Upscaler-Photo-Face.png');">
         <div class="story-box">
             <p>כאשר הם עונים נכון — הארון נפתח.<br>הם רואים גביעים, מדליות ותמונות מאליפויות.</p>
             <p>ואז אחד הילדים אומר:<br><strong>"אם המועדון הגיע לכל ההישגים האלה… אולי גם אנחנו יכולים להצליח."</strong></p>
@@ -200,7 +203,7 @@
         <button class="btn btn-small" onclick="nextScreen('screen5')">לעבור לדף הבא</button>
     </div>
 
-    <div id="screen5" class="screen" style="background-image: url('https://i.ibb.co/F4T5ryzr/Screen-Shot-3-16-2026-7-11-12-PM.png');">
+    <div id="screen5" class="screen" style="background-image: url('https://i.ibb.co/WNCcpFdq/Screen-Shot-3-16-2026-7-11-12-PM-Nero-AI-Image-Upscaler-Photo-Face.png');">
         <div class="story-box">
             <h2>חלק 4 – האימונים</h2>
             <p>הילדים מחליטים לנסות ולהתאמן עם דני. אבל בהתחלה הם מתקשים מאוד.</p>
@@ -210,7 +213,7 @@
         <button class="btn btn-small" onclick="nextScreen('screen6'); initScreen6();">לעבור לדף הבא</button>
     </div>
 
-    <div id="screen6" class="screen" style="background-image: url('https://i.ibb.co/fGkHzKZv/Screen-Shot-3-16-2026-7-10-53-PM.png');">
+    <div id="screen6" class="screen" style="background-image: url('https://i.ibb.co/L2rTHFd/Screen-Shot-3-16-2026-7-10-53-PM-Nero-AI-Image-Upscaler-Photo-Face.png');">
         <div class="top-text">שלב 3 – משימות האימון (3 משימות)</div>
         <div id="dot6_1" class="glowing-dot" style="top: 40%; left: 30%;" onclick="openQuestion(6, 1)"></div>
         <div id="dot6_2" class="glowing-dot" style="top: 50%; left: 50%;" onclick="openQuestion(6, 2)"></div>
@@ -218,7 +221,7 @@
         <button id="btnNextScreen6" class="btn btn-small" style="display:none;" onclick="nextScreen('screen7')">לעבור לדף הבא</button>
     </div>
 
-    <div id="screen7" class="screen" style="background-image: url('https://i.ibb.co/6JrH6XvL/Screen-Shot-3-16-2026-7-10-41-PM.png');">
+    <div id="screen7" class="screen" style="background-image: url('https://i.ibb.co/kszVkjTy/Screen-Shot-3-16-2026-7-10-41-PM-Nero-AI-Image-Upscaler-Photo-Face.png');">
         <div class="story-box">
             <h2>הסיום</h2>
             <p>עובר זמן. שנה לאחר מכן הילדים פותחים עיתון ורואים כתבה עם תמונה שלהם.</p>
@@ -236,7 +239,7 @@
                 1: { q: "באיזה ענף ספורט דני בוברוב מתחרה?", options: ["כדורסל כיסאות גלגלים", "טניס שולחן", "שחייה פראלימפית", "אתלטיקה קלה"], correct: 1 },
                 2: { q: "באיזה מועדון דני בוברוב מאמן כיום?", options: ["הפועל פתח-תקווה", "מכבי תל אביב", "הפועל ירושלים", "מכבי חיפה"], correct: 0 },
                 3: { q: "איזה אגודה וקבוצת טניס שולחן דני בוברוב מנהל?", options: ["הפועל פתח-תקווה", "עירוני קרית אונו", "מכבי רמת גן", "אליצור נתניה"], correct: 0 },
-                4: { q: "מה היה דירוג השיא של דני בוברוב בעולם בטניס שולחן?", options: ["מקום 100", "מקום 50", "עשירייה ראשונה בעולם", "מקום 1"], correct: 2 }, // אנא עדכן את התשובה המדויקת אם צריך
+                4: { q: "מה היה דירוג השיא של דני בוברוב בעולם בטניס שולחן?", options: ["מקום 100", "מקום 50", "עשירייה ראשונה בעולם", "מקום 1"], correct: 2 }, 
                 5: { q: "למה בחרו בדני בוברוב להיות דמות מעוררת השראה במועדון?", options: ["בגלל גובהו", "בגלל שהוא גר קרוב", "בגלל הישגיו המרשימים והדרך שעבר", "כי הוא מפורסם בטלוויזיה"], correct: 2 }
             },
             screen3: {
